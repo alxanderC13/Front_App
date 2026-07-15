@@ -41,4 +41,18 @@ export class AxiosReferenceDataRepository implements ReferenceDataRepository {
       throw parseApiError(error)
     }
   }
+
+  async listTripOptions(): Promise<ReferenceOption[]> {
+    try {
+      const { data } = await axiosClient.get<{
+        results: { id: number; route_code: string; vehicle_plate: string; trip_date: string }[]
+      }>('/operations/trips/', { params: { page_size: 100 } })
+      return data.results.map((t) => ({
+        id: t.id,
+        label: `${t.route_code} — ${t.vehicle_plate} (${t.trip_date})`,
+      }))
+    } catch (error) {
+      throw parseApiError(error)
+    }
+  }
 }

@@ -14,6 +14,7 @@ import RoutesListPage from '../pages/admin/routes/RoutesListPage'
 import DashboardPage from '../pages/admin/dashboard/DashboardPage'
 import DriversListPage from '../pages/admin/drivers/DriversListPage'
 import TripsListPage from '../pages/admin/trips/TripsListPage'
+import IncidentsListPage from '../pages/admin/incidents/IncidentsListPage'
 import ProfilePage from '../pages/profile/ProfilePage'
 import NotificationsPage from '../pages/notifications/NotificationsPage'
 
@@ -49,7 +50,7 @@ export default function AppRouter() {
             <Route path="/admin/drivers" element={<DriversListPage />} />
             <Route path="/admin/assignments" element={<PlaceholderPage title="Admin Asignaciones" />} />
             <Route path="/admin/trips" element={<TripsListPage />} />
-            <Route path="/admin/incidents" element={<PlaceholderPage title="Admin Incidentes" />} />
+            <Route path="/admin/incidents" element={<IncidentsListPage />} />
           </Route>
         </Route>
 
