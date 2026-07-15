@@ -14,6 +14,7 @@ import {
 import { useAuthStore } from '../../store/auth.store'
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
+import ThemeToggle from '../theme-toggle'
 import { cn } from '../../utils/cn'
 
 interface NavItem {
@@ -81,10 +82,15 @@ export default function AdminLayout() {
         <Separator className="my-4" />
 
         <div className="px-2">
-          <p className="text-sm font-medium">{user?.username}</p>
-          <p className="text-xs text-muted-foreground">
-            {isAdmin ? 'Administrator' : 'Usuario'}
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">{user?.username}</p>
+              <p className="text-xs text-muted-foreground">
+                {isAdmin ? 'Administrator' : 'Usuario'}
+              </p>
+            </div>
+            <ThemeToggle />
+          </div>
           <Button
             variant="ghost"
             size="sm"
@@ -102,9 +108,12 @@ export default function AdminLayout() {
         {/* Topbar (mobile) */}
         <header className="flex items-center justify-between border-b bg-background px-4 py-3 md:hidden">
           <h1 className="text-lg font-bold text-primary">QuitoMove</h1>
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </header>
 
         <main className="flex-1 p-6">

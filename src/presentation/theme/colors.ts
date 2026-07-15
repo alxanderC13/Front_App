@@ -1,12 +1,15 @@
 // src/presentation/theme/colors.ts
 
+/**
+ * Paleta de colores oficial del proyecto (definida en la guía UX/UI).
+ */
 export const colors = {
-  primary: 'hsl(221.2 83.2% 53.3%)',
-  primaryForeground: 'hsl(210 40% 98%)',
-  destructive: 'hsl(0 84.2% 60.2%)',
-  muted: 'hsl(210 40% 96.1%)',
-  mutedForeground: 'hsl(215.4 16.3% 46.9%)',
-  border: 'hsl(214.3 31.8% 91.4%)',
-  background: 'hsl(0 0% 100%)',
-  foreground: 'hsl(222.2 84% 4.9%)',
+  primary: '#1E5EFF',
+  success: '#19C37D',
+  warning: '#FFB020',
+  destructive: '#FF3B30',
+  darkBackground: '#0B1220',
+  darkSurface: '#111827',
+  darkBorder: '#2A3441',
+  textSecondary: '#A3AAB8',
 } as const

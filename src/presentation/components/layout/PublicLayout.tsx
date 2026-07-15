@@ -3,6 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { Bus } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { Button } from '../ui/button'
+import ThemeToggle from '../theme-toggle'
 
 const links = [
   { to: '/', label: 'Inicio' },
@@ -38,9 +39,12 @@ export default function PublicLayout() {
             ))}
           </nav>
 
-          <NavLink to="/login">
-            <Button size="sm">Iniciar sesión</Button>
-          </NavLink>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <NavLink to="/login">
+              <Button size="sm">Iniciar sesión</Button>
+            </NavLink>
+          </div>
         </div>
       </header>
 
