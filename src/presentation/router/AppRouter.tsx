@@ -11,7 +11,9 @@ import PublicRouteDetailPage from '../pages/catalog/PublicRouteDetailPage'
 import ContactPage from '../pages/contact/ContactPage'
 import VehiclesListPage from '../pages/admin/vehicles/VehiclesListPage'
 import RoutesListPage from '../pages/admin/routes/RoutesListPage'
+import DashboardPage from '../pages/admin/dashboard/DashboardPage'
 import ProfilePage from '../pages/profile/ProfilePage'
+import NotificationsPage from '../pages/notifications/NotificationsPage'
 
 export default function AppRouter() {
   return (
@@ -32,14 +34,14 @@ export default function AppRouter() {
         <Route element={<PrivateRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/profile" element={<ProfilePage />} />
-            <Route path="/admin/notifications" element={<PlaceholderPage title="Notificaciones" />} />
+            <Route path="/admin/notifications" element={<NotificationsPage />} />
           </Route>
         </Route>
 
         {/* Privado — requiere rol Administrator */}
         <Route element={<PrivateRoute requireAdmin />}>
           <Route element={<AdminLayout />}>
-            <Route path="/admin" element={<PlaceholderPage title="Admin Dashboard" />} />
+            <Route path="/admin" element={<DashboardPage />} />
             <Route path="/admin/vehicles" element={<VehiclesListPage />} />
             <Route path="/admin/routes" element={<RoutesListPage />} />
             <Route path="/admin/drivers" element={<PlaceholderPage title="Admin Conductores" />} />
