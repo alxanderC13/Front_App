@@ -11,6 +11,7 @@ import PublicRouteDetailPage from '../pages/catalog/PublicRouteDetailPage'
 import ContactPage from '../pages/contact/ContactPage'
 import VehiclesListPage from '../pages/admin/vehicles/VehiclesListPage'
 import RoutesListPage from '../pages/admin/routes/RoutesListPage'
+import ProfilePage from '../pages/profile/ProfilePage'
 
 export default function AppRouter() {
   return (
@@ -30,7 +31,7 @@ export default function AppRouter() {
         {/* Privado — cualquier usuario autenticado */}
         <Route element={<PrivateRoute />}>
           <Route element={<AdminLayout />}>
-            <Route path="/admin/profile" element={<PlaceholderPage title="Mi Perfil" />} />
+            <Route path="/admin/profile" element={<ProfilePage />} />
             <Route path="/admin/notifications" element={<PlaceholderPage title="Notificaciones" />} />
           </Route>
         </Route>
