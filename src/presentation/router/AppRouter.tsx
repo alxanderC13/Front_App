@@ -4,6 +4,11 @@ import PlaceholderPage from '../pages/PlaceholderPage'
 import LoginPage from '../pages/auth/LoginPage'
 import PrivateRoute from './PrivateRoute'
 import AdminLayout from '../components/layout/AdminLayout'
+import PublicLayout from '../components/layout/PublicLayout'
+import HomePage from '../pages/home/HomePage'
+import PublicRoutesPage from '../pages/catalog/PublicRoutesPage'
+import PublicRouteDetailPage from '../pages/catalog/PublicRouteDetailPage'
+import ContactPage from '../pages/contact/ContactPage'
 import VehiclesListPage from '../pages/admin/vehicles/VehiclesListPage'
 import RoutesListPage from '../pages/admin/routes/RoutesListPage'
 
@@ -14,10 +19,13 @@ export default function AppRouter() {
         {/* Auth */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Público — catálogo de rutas y paradas */}
-        <Route path="/" element={<PlaceholderPage title="Inicio — QuitoMove" />} />
-        <Route path="/routes" element={<PlaceholderPage title="Rutas públicas" />} />
-        <Route path="/routes/:id" element={<PlaceholderPage title="Detalle de ruta" />} />
+        {/* Público — con navbar */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/routes" element={<PublicRoutesPage />} />
+          <Route path="/routes/:id" element={<PublicRouteDetailPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+        </Route>
 
         {/* Privado — cualquier usuario autenticado */}
         <Route element={<PrivateRoute />}>
