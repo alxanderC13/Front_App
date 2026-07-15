@@ -4,6 +4,7 @@ import PlaceholderPage from '../pages/PlaceholderPage'
 import LoginPage from '../pages/auth/LoginPage'
 import PrivateRoute from './PrivateRoute'
 import AdminLayout from '../components/layout/AdminLayout'
+import VehiclesListPage from '../pages/admin/vehicles/VehiclesListPage'
 
 export default function AppRouter() {
   return (
@@ -29,7 +30,7 @@ export default function AppRouter() {
         <Route element={<PrivateRoute requireAdmin />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<PlaceholderPage title="Admin Dashboard" />} />
-            <Route path="/admin/vehicles" element={<PlaceholderPage title="Admin Vehículos" />} />
+            <Route path="/admin/vehicles" element={<VehiclesListPage />} />
             <Route path="/admin/routes" element={<PlaceholderPage title="Admin Rutas" />} />
             <Route path="/admin/drivers" element={<PlaceholderPage title="Admin Conductores" />} />
             <Route path="/admin/assignments" element={<PlaceholderPage title="Admin Asignaciones" />} />

@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import AppRouter from './presentation/router/AppRouter'
 import { useAuthStore } from './presentation/store/auth.store'
+import { Toaster } from './presentation/components/ui/sonner'
 
 export default function App() {
   const loadCurrentUser = useAuthStore((state) => state.loadCurrentUser)
@@ -10,5 +11,10 @@ export default function App() {
     loadCurrentUser()
   }, [loadCurrentUser])
 
-  return <AppRouter />
+  return (
+    <>
+      <AppRouter />
+      <Toaster richColors position="top-right" />
+    </>
+  )
 }
