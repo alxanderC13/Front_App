@@ -5,6 +5,7 @@ import LoginPage from '../pages/auth/LoginPage'
 import PrivateRoute from './PrivateRoute'
 import AdminLayout from '../components/layout/AdminLayout'
 import VehiclesListPage from '../pages/admin/vehicles/VehiclesListPage'
+import RoutesListPage from '../pages/admin/routes/RoutesListPage'
 
 export default function AppRouter() {
   return (
@@ -31,7 +32,7 @@ export default function AppRouter() {
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<PlaceholderPage title="Admin Dashboard" />} />
             <Route path="/admin/vehicles" element={<VehiclesListPage />} />
-            <Route path="/admin/routes" element={<PlaceholderPage title="Admin Rutas" />} />
+            <Route path="/admin/routes" element={<RoutesListPage />} />
             <Route path="/admin/drivers" element={<PlaceholderPage title="Admin Conductores" />} />
             <Route path="/admin/assignments" element={<PlaceholderPage title="Admin Asignaciones" />} />
             <Route path="/admin/trips" element={<PlaceholderPage title="Admin Viajes" />} />
