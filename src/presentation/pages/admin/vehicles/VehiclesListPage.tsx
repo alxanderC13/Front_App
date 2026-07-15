@@ -36,7 +36,6 @@ export default function VehiclesListPage() {
     vehicles,
     count,
     page,
-    search,
     isLoading,
     fetchVehicles,
     fetchLookups,

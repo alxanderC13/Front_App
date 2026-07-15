@@ -32,7 +32,8 @@ const routeSchema = z.object({
   transportCompany: z.string().nullable(),
 })
 
-type RouteFormValues = z.infer<typeof routeSchema>
+type RouteFormInput = z.input<typeof routeSchema>
+type RouteFormValues = z.output<typeof routeSchema>
 
 interface RouteFormDialogProps {
   open: boolean
@@ -49,7 +50,7 @@ export default function RouteFormDialog({ open, onOpenChange, route }: RouteForm
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<RouteFormValues>({
+  } = useForm<RouteFormInput, unknown, RouteFormValues>({
     resolver: zodResolver(routeSchema),
     defaultValues: {
       code: '',
