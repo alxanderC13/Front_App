@@ -18,7 +18,11 @@ const profileSchema = z.object({
   emergencyContact: z.string().max(120).optional().default(''),
   emergencyPhone: z.string().max(30).optional().default(''),
 })
-type ProfileFormValues = z.infer<typeof profileSchema>
+
+// Input = lo que escribe el usuario (campos opcionales pueden ser undefined)
+// Output = lo que entrega zod ya validado y con defaults aplicados
+type ProfileFormInput = z.input<typeof profileSchema>
+type ProfileFormOutput = z.output<typeof profileSchema>
 
 const passwordSchema = z
   .object({
@@ -41,7 +45,7 @@ export default function ProfilePage() {
     register: registerProfile,
     handleSubmit: handleSubmitProfile,
     formState: { errors: profileErrors },
-  } = useForm<ProfileFormValues>({
+  } = useForm<ProfileFormInput, unknown, ProfileFormOutput>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       address: user?.profile?.address ?? '',
@@ -60,13 +64,13 @@ export default function ProfilePage() {
     defaultValues: { oldPassword: '', newPassword: '', confirmPassword: '' },
   })
 
-  async function onSubmitProfile(values: ProfileFormValues) {
+  async function onSubmitProfile(values: ProfileFormOutput) {
     setIsSavingProfile(true)
     try {
       await updateProfileUseCase.execute({
-        address: values.address ?? '',
-        emergency_contact: values.emergencyContact ?? '',
-        emergency_phone: values.emergencyPhone ?? '',
+        address: values.address,
+        emergency_contact: values.emergencyContact,
+        emergency_phone: values.emergencyPhone,
       })
       toast.success('Perfil actualizado correctamente')
     } catch (err) {

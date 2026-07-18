@@ -1,6 +1,5 @@
 // src/presentation/router/AppRouter.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import PlaceholderPage from '../pages/PlaceholderPage'
 import LoginPage from '../pages/auth/LoginPage'
 import PrivateRoute from './PrivateRoute'
 import AdminLayout from '../components/layout/AdminLayout'

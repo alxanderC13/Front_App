@@ -44,7 +44,10 @@ const tripSchema = z.object({
   observations: z.string().optional().default(''),
 })
 
-type TripFormValues = z.infer<typeof tripSchema>
+// Input = lo que escribe el usuario (campos opcionales pueden ser undefined)
+// Output = lo que entrega zod ya validado y con defaults aplicados
+type TripFormInput = z.input<typeof tripSchema>
+type TripFormOutput = z.output<typeof tripSchema>
 
 interface TripFormDialogProps {
   open: boolean
@@ -66,7 +69,7 @@ export default function TripFormDialog({ open, onOpenChange, trip }: TripFormDia
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<TripFormValues>({
+  } = useForm<TripFormInput, unknown, TripFormOutput>({
     resolver: zodResolver(tripSchema),
     defaultValues: {
       route: '',
@@ -109,7 +112,7 @@ export default function TripFormDialog({ open, onOpenChange, trip }: TripFormDia
     }
   }, [trip, reset, open])
 
-  async function onSubmit(values: TripFormValues) {
+  async function onSubmit(values: TripFormOutput) {
     const dto = {
       route: Number(values.route),
       vehicle: Number(values.vehicle),
