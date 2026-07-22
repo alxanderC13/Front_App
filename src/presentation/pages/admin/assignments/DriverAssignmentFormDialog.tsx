@@ -32,7 +32,8 @@
     isActiveAssignment: z.enum(['true', 'false']),
   })
 
-  type AssignmentFormValues = z.infer<typeof assignmentSchema>
+  type AssignmentFormInput = z.input<typeof assignmentSchema>
+  type AssignmentFormOutput = z.output<typeof assignmentSchema>
 
   interface DriverAssignmentFormDialogProps {
     open: boolean
@@ -54,7 +55,7 @@
       handleSubmit,
       reset,
       formState: { errors, isSubmitting },
-    } = useForm<AssignmentFormValues>({
+    } = useForm<AssignmentFormInput, unknown, AssignmentFormOutput>({
       resolver: zodResolver(assignmentSchema),
       defaultValues: {
         driver: '',
@@ -85,7 +86,7 @@
       }
     }, [assignment, reset, open])
 
-    async function onSubmit(values: AssignmentFormValues) {
+    async function onSubmit(values: AssignmentFormOutput) {
       const dto = {
         driver: Number(values.driver),
         vehicle: Number(values.vehicle),
