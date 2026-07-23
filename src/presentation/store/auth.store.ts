@@ -1,7 +1,7 @@
 // src/presentation/store/auth.store.ts
 import { create } from 'zustand'
 import type { User } from '../../domain/entities/User'
-import { loginUseCase, getCurrentUserUseCase, logoutUseCase } from '../../infrastructure/factories/auth.factory'
+import { loginUseCase, registerUseCase, getCurrentUserUseCase, logoutUseCase } from '../../infrastructure/factories/auth.factory'
 import { localTokenStorage } from '../../infrastructure/storage/local-token-storage'
 import { isAdministrator } from '../../domain/enums/Role'
 
@@ -11,6 +11,7 @@ interface AuthState {
   isInitializing: boolean
   error: string | null
   login: (username: string, password: string) => Promise<void>
+  register: (username: string, email: string, password: string) => Promise<void>
   logout: () => void
   loadCurrentUser: () => Promise<void>
   isAuthenticated: () => boolean
@@ -35,6 +36,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+  register: async (username: string, email: string, password: string) => {
+    set({ isLoading: true, error: null })
+    try {
+      await registerUseCase.execute({ username, email, password })
+      set({ isLoading: false })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error al registrarse'
+      set({ error: message, isLoading: false })
+      throw err
+    }
+  },
   logout: () => {
     logoutUseCase.execute()
     set({ user: null })

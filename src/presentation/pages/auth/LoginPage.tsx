@@ -1,6 +1,6 @@
 // src/presentation/pages/auth/LoginPage.tsx
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/auth.store'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
@@ -67,6 +67,12 @@ export default function LoginPage() {
             <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? 'Ingresando...' : 'Ingresar'}
             </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              ¿No tienes cuenta?{' '}
+              <Link to="/register" className="font-medium text-primary hover:underline">
+                Regístrate aquí
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>

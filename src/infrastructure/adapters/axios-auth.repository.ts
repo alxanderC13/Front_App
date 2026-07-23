@@ -1,5 +1,5 @@
 // src/infrastructure/adapters/axios-auth.repository.ts
-import type { AuthRepository, AuthTokens } from '../../domain/ports/AuthRepository'
+import type { AuthRepository, AuthTokens, RegisterPayload } from '../../domain/ports/AuthRepository'
 import type { User } from '../../domain/entities/User'
 import { axiosClient } from '../http/axios-client'
 import { parseApiError } from '../http/parse-api-error'
@@ -54,6 +54,14 @@ export class AxiosAuthRepository implements AuthRepository {
       })
       localTokenStorage.setTokens(data.access, data.refresh)
       return data
+    } catch (error) {
+      throw parseApiError(error)
+    }
+  }
+
+  async register(data: RegisterPayload): Promise<void> {
+    try {
+      await axiosClient.post('/auth/register/', data)
     } catch (error) {
       throw parseApiError(error)
     }

@@ -1,6 +1,7 @@
 // src/presentation/router/AppRouter.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '../pages/auth/LoginPage'
+import RegisterPage from '../pages/auth/RegisterPage'
 import PrivateRoute from './PrivateRoute'
 import AdminLayout from '../components/layout/AdminLayout'
 import PublicLayout from '../components/layout/PublicLayout'
@@ -24,6 +25,7 @@ export default function AppRouter() {
       <Routes>
         {/* Auth */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* Público — con navbar */}
         <Route element={<PublicLayout />}>

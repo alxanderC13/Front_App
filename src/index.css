@@ -22,6 +22,8 @@
   --color-success-foreground: hsl(var(--success-foreground));
   --color-warning: hsl(var(--warning));
   --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-accent-red: hsl(var(--accent-red));
+  --color-accent-red-foreground: hsl(var(--accent-red-foreground));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -38,7 +40,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 223 100% 56%;
+    --primary: 216 85% 34%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -46,16 +48,18 @@
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 3 100% 59%;
+    --destructive: 0 65% 51%;
     --destructive-foreground: 0 0% 100%;
-    --success: 155 77% 43%;
+    --success: 123 46% 34%;
     --success-foreground: 0 0% 100%;
-    --warning: 39 100% 56%;
+    --warning: 38 100% 50%;
     --warning-foreground: 222.2 47.4% 11.2%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 223 100% 56%;
-    --radius: 0.5rem;
+    --ring: 216 85% 34%;
+    --radius: 0.75rem;
+    --accent-red: 0 66% 47%;
+    --accent-red-foreground: 0 0% 100%;
   }
 
   .dark {
@@ -65,7 +69,7 @@
     --card-foreground: 0 0% 100%;
     --popover: 221 39% 11%;
     --popover-foreground: 0 0% 100%;
-    --primary: 223 100% 56%;
+    --primary: 226 59% 58%;
     --primary-foreground: 0 0% 100%;
     --secondary: 214 21% 21%;
     --secondary-foreground: 0 0% 100%;
@@ -73,15 +77,17 @@
     --muted-foreground: 220 13% 68%;
     --accent: 214 21% 21%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 3 100% 59%;
+    --destructive: 0 65% 60%;
     --destructive-foreground: 0 0% 100%;
-    --success: 155 77% 43%;
+    --success: 123 40% 45%;
     --success-foreground: 0 0% 100%;
-    --warning: 39 100% 56%;
+    --warning: 38 100% 55%;
     --warning-foreground: 0 0% 100%;
     --border: 214 21% 21%;
     --input: 214 21% 21%;
-    --ring: 223 100% 56%;
+    --ring: 226 59% 58%;
+    --accent-red: 5 100% 66%;
+    --accent-red-foreground: 0 0% 100%;
   }
 }
 
