@@ -9,6 +9,7 @@ const links = [
   { to: '/', label: 'Inicio' },
   { to: '/routes', label: 'Rutas' },
   { to: '/contact', label: 'Contacto' },
+  { to: '/about', label: 'Acerca de' },
 ]
 
 export default function PublicLayout() {
