@@ -147,7 +147,7 @@ function distanceBetweenStops(
   return distance
 }
 
-const BUS_CYCLE_SECONDS = 30
+const BUS_CYCLE_SECONDS = 10
 const ASSUMED_SPEED_KMH = 22 // velocidad urbana promedio estimada
 
 interface RouteMapProps {
