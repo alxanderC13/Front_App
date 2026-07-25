@@ -1,6 +1,7 @@
 // src/presentation/pages/home/HomePage.tsx
 import { Link } from 'react-router-dom'
-import { Bus, MapPin, Clock, ShieldCheck } from 'lucide-react'
+import { Bus, MapPin, Clock, ShieldCheck, AlertTriangle, LayoutDashboard, LogIn } from 'lucide-react'
+import { useAuthStore } from '../../store/auth.store'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent } from '../../components/ui/card'
 
@@ -23,6 +24,9 @@ const features = [
 ]
 
 export default function HomePage() {
+  const user = useAuthStore((state) => state.user)
+  const isAdmin = useAuthStore((state) => state.isAdmin())
+
   return (
     <div>
       <section className="bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-20">
@@ -60,6 +64,75 @@ export default function HomePage() {
               </Card>
             )
           })}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-3xl px-4 pb-16">
+        <div className="flex flex-col gap-4">
+          {user && (
+            <Card className="border-accent-red/20 bg-accent-red/5">
+              <CardContent className="flex flex-col gap-3 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-lg bg-accent-red/10 p-2">
+                    <AlertTriangle className="h-5 w-5 text-accent-red" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Estado de las Rutas</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Conoce las incidencias activas y el estado operativo del transporte.
+                    </p>
+                  </div>
+                </div>
+                <Link to="/admin/incidents">
+                  <Button variant="outline" className="w-full gap-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    Ver Incidencias
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
+
+          {!user && (
+            <Card>
+              <CardContent className="flex flex-col items-center gap-3 p-6 text-center">
+                <LogIn className="h-8 w-8 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">
+                  Inicia sesión para ver el estado de las rutas
+                </p>
+                <Link to="/login" className="w-full">
+                  <Button variant="outline" className="w-full gap-2">
+                    <LogIn className="h-4 w-4" />
+                    Iniciar Sesión
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
+
+          {isAdmin && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-col gap-3 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-lg bg-primary/10 p-2">
+                    <LayoutDashboard className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Panel de Administración</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Gestiona vehículos, rutas, conductores e incidencias.
+                    </p>
+                  </div>
+                </div>
+                <Link to="/admin">
+                  <Button variant="secondary" className="w-full gap-2">
+                    <LayoutDashboard className="h-4 w-4" />
+                    Ir al Panel Admin
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </section>
     </div>
