@@ -4,6 +4,7 @@ import AppRouter from './presentation/router/AppRouter'
 import { useAuthStore } from './presentation/store/auth.store'
 import { useThemeStore } from './presentation/store/theme.store'
 import { Toaster } from './presentation/components/ui/sonner'
+import { pushNotificationService } from './infrastructure/services/push-notification.service'
 
 export default function App() {
   const loadCurrentUser = useAuthStore((state) => state.loadCurrentUser)
@@ -12,6 +13,7 @@ export default function App() {
   useEffect(() => {
     loadCurrentUser()
     initTheme()
+    pushNotificationService.initialize()
   }, [loadCurrentUser, initTheme])
 
   return (

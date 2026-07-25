@@ -11,6 +11,7 @@ import {
 } from '../../infrastructure/factories/auth.factory'
 import { localTokenStorage } from '../../infrastructure/storage/local-token-storage'
 import { isAdministrator } from '../../domain/enums/Role'
+import { pushNotificationService } from '../../infrastructure/services/push-notification.service'
 
 interface AuthState {
   user: User | null
@@ -43,6 +44,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const user = await loginUseCase.execute({ username, password })
       set({ user, isLoading: false })
+      pushNotificationService.registerTokenForUser()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error al iniciar sesión'
       set({ error: message, isLoading: false })
