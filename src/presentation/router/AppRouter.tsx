@@ -11,13 +11,16 @@ import HomePage from '../pages/home/HomePage'
 import PublicRoutesPage from '../pages/catalog/PublicRoutesPage'
 import PublicRouteDetailPage from '../pages/catalog/PublicRouteDetailPage'
 import ContactPage from '../pages/contact/ContactPage'
+import AboutPage from '../pages/about/AboutPage'
 import VehiclesListPage from '../pages/admin/vehicles/VehiclesListPage'
 import RoutesListPage from '../pages/admin/routes/RoutesListPage'
 import DashboardPage from '../pages/admin/dashboard/DashboardPage'
 import DriversListPage from '../pages/admin/drivers/DriversListPage'
 import TripsListPage from '../pages/admin/trips/TripsListPage'
+import LiveTripMapPage from '../pages/admin/trips/LiveTripMapPage'
 import IncidentsListPage from '../pages/admin/incidents/IncidentsListPage'
 import DriverAssignmentsListPage from '../pages/admin/assignments/DriverAssignmentsListPage'
+import BusStopsListPage from '../pages/admin/stops/BusStopsListPage'
 import ProfilePage from '../pages/profile/ProfilePage'
 import NotificationsPage from '../pages/notifications/NotificationsPage'
 
@@ -37,18 +40,11 @@ export default function AppRouter() {
           <Route path="/routes" element={<PublicRoutesPage />} />
           <Route path="/routes/:id" element={<PublicRouteDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Route>
 
-        {/* Privado — cualquier usuario autenticado */}
+        {/* Privado — cualquier usuario autenticado (lectura; escritura solo Administrator via UI) */}
         <Route element={<PrivateRoute />}>
-          <Route element={<AdminLayout />}>
-            <Route path="/admin/profile" element={<ProfilePage />} />
-            <Route path="/admin/notifications" element={<NotificationsPage />} />
-          </Route>
-        </Route>
-
-        {/* Privado — requiere rol Administrator */}
-        <Route element={<PrivateRoute requireAdmin />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<DashboardPage />} />
             <Route path="/admin/vehicles" element={<VehiclesListPage />} />
@@ -56,7 +52,11 @@ export default function AppRouter() {
             <Route path="/admin/drivers" element={<DriversListPage />} />
             <Route path="/admin/assignments" element={<DriverAssignmentsListPage />} />
             <Route path="/admin/trips" element={<TripsListPage />} />
+            <Route path="/admin/trips/:id/live-map" element={<LiveTripMapPage />} />
             <Route path="/admin/incidents" element={<IncidentsListPage />} />
+            <Route path="/admin/stops" element={<BusStopsListPage />} />
+            <Route path="/admin/profile" element={<ProfilePage />} />
+            <Route path="/admin/notifications" element={<NotificationsPage />} />
           </Route>
         </Route>
 
