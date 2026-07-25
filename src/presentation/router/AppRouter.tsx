@@ -43,20 +43,26 @@ export default function AppRouter() {
           <Route path="/about" element={<AboutPage />} />
         </Route>
 
-        {/* Privado — cualquier usuario autenticado (lectura; escritura solo Administrator via UI) */}
+        {/* Privado — cualquier usuario autenticado */}
         <Route element={<PrivateRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<DashboardPage />} />
+            <Route path="/admin/incidents" element={<IncidentsListPage />} />
+            <Route path="/admin/notifications" element={<NotificationsPage />} />
+            <Route path="/admin/profile" element={<ProfilePage />} />
+          </Route>
+        </Route>
+
+        {/* Privado — requiere rol Administrator */}
+        <Route element={<PrivateRoute requireAdmin />}>
+          <Route element={<AdminLayout />}>
             <Route path="/admin/vehicles" element={<VehiclesListPage />} />
             <Route path="/admin/routes" element={<RoutesListPage />} />
             <Route path="/admin/drivers" element={<DriversListPage />} />
             <Route path="/admin/assignments" element={<DriverAssignmentsListPage />} />
             <Route path="/admin/trips" element={<TripsListPage />} />
             <Route path="/admin/trips/:id/live-map" element={<LiveTripMapPage />} />
-            <Route path="/admin/incidents" element={<IncidentsListPage />} />
             <Route path="/admin/stops" element={<BusStopsListPage />} />
-            <Route path="/admin/profile" element={<ProfilePage />} />
-            <Route path="/admin/notifications" element={<NotificationsPage />} />
           </Route>
         </Route>
 
