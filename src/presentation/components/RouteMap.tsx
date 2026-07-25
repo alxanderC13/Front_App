@@ -5,7 +5,9 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { PublicRouteStop, RouteCoordinate } from '../../domain/entities/PublicRoute'
 import { Button } from './ui/button'
-import { LocateFixed, X, Bus as BusIcon } from 'lucide-react'
+import { LocateFixed, X, Bus as BusIcon, Clock } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Label } from './ui/label'
 
 function numberedIcon(order: number) {
   return L.divIcon({
@@ -113,6 +115,38 @@ function remainingDistanceMeters(path: [number, number][], t: number): number {
   return distance
 }
 
+// Encuentra el índice del punto de la polilínea más cercano a una parada
+function nearestIndexToPoint(path: [number, number][], point: [number, number]): number {
+  let bestIndex = 0
+  let bestDist = Infinity
+  for (let i = 0; i < path.length; i++) {
+    const d = haversineMeters(path[i], point)
+    if (d < bestDist) {
+      bestDist = d
+      bestIndex = i
+    }
+  }
+  return bestIndex
+}
+
+// Distancia sobre el trazado de la ruta entre dos paradas
+function distanceBetweenStops(
+  path: [number, number][],
+  stopA: PublicRouteStop,
+  stopB: PublicRouteStop,
+): number {
+  if (path.length < 2) return haversineMeters([stopA.latitude, stopA.longitude], [stopB.latitude, stopB.longitude])
+  const idxA = nearestIndexToPoint(path, [stopA.latitude, stopA.longitude])
+  const idxB = nearestIndexToPoint(path, [stopB.latitude, stopB.longitude])
+  const start = Math.min(idxA, idxB)
+  const end = Math.max(idxA, idxB)
+  let distance = 0
+  for (let j = start; j < end; j++) {
+    distance += haversineMeters(path[j], path[j + 1])
+  }
+  return distance
+}
+
 const BUS_CYCLE_SECONDS = 30
 const ASSUMED_SPEED_KMH = 22 // velocidad urbana promedio estimada
 
@@ -131,6 +165,10 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
   const [isLoadingRoute, setIsLoadingRoute] = useState(false)
   const [busProgress, setBusProgress] = useState(0)
 
+  const [originStopId, setOriginStopId] = useState<string>('')
+  const [destinationStopId, setDestinationStopId] = useState<string>('')
+
+  const sortedStops = [...stops].sort((a, b) => a.stopOrder - b.stopOrder)
   const sortedCoordinates = [...coordinates].sort((a, b) => a.order - b.order)
   const polylinePositions: [number, number][] = sortedCoordinates.map((c) => [
     c.latitude,
@@ -145,7 +183,6 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
     const interval = setInterval(() => {
       const elapsed = (Date.now() - startTimeRef.current) / 1000
       const cyclePos = (elapsed % (BUS_CYCLE_SECONDS * 2)) / BUS_CYCLE_SECONDS
-      // va de 0 a 1 y luego regresa de 1 a 0 (ida y vuelta), igual que una ruta real
       const t = cyclePos <= 1 ? cyclePos : 2 - cyclePos
       setBusProgress(t)
     }, 200)
@@ -157,6 +194,16 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
   const busPosition = interpolateAlongPath(polylinePositions, busProgress)
   const remainingMeters = remainingDistanceMeters(polylinePositions, busProgress)
   const etaMinutes = Math.max(1, Math.round((remainingMeters / 1000 / ASSUMED_SPEED_KMH) * 60))
+
+  const originStop = sortedStops.find((s) => String(s.id) === originStopId)
+  const destinationStop = sortedStops.find((s) => String(s.id) === destinationStopId)
+
+  let tripDistanceMeters: number | null = null
+  let tripMinutes: number | null = null
+  if (originStop && destinationStop && originStop.id !== destinationStop.id) {
+    tripDistanceMeters = distanceBetweenStops(polylinePositions, originStop, destinationStop)
+    tripMinutes = Math.max(1, Math.round((tripDistanceMeters / 1000 / ASSUMED_SPEED_KMH) * 60))
+  }
 
   async function findNearestStopAndRoute(position: [number, number]) {
     if (stops.length === 0) return
@@ -221,7 +268,63 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
         : [-0.1807, -78.4678] // fallback: Quito
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
+      {sortedStops.length >= 2 && (
+        <div className="rounded-md border bg-background p-4">
+          <p className="mb-3 text-sm font-medium">¿Cuánto tarda el bus entre dos paradas?</p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-xs text-muted-foreground">Origen</Label>
+              <Select value={originStopId} onValueChange={setOriginStopId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona parada de origen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortedStops.map((stop) => (
+                    <SelectItem key={stop.id} value={String(stop.id)}>
+                      {stop.stopOrder}. {stop.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-xs text-muted-foreground">Destino</Label>
+              <Select value={destinationStopId} onValueChange={setDestinationStopId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona parada de destino" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortedStops.map((stop) => (
+                    <SelectItem key={stop.id} value={String(stop.id)}>
+                      {stop.stopOrder}. {stop.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {originStop && destinationStop && originStop.id === destinationStop.id && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              Selecciona dos paradas diferentes para calcular el tiempo.
+            </p>
+          )}
+
+          {tripDistanceMeters !== null && tripMinutes !== null && (
+            <div className="mt-3 flex items-center gap-2 rounded-md bg-primary/10 p-3 text-sm">
+              <Clock className="h-4 w-4 shrink-0 text-primary" />
+              <span>
+                De <span className="font-medium">{originStop?.name}</span> a{' '}
+                <span className="font-medium">{destinationStop?.name}</span>:{' '}
+                <span className="font-medium text-primary">~{tripMinutes} min</span> (
+                {formatDistance(tripDistanceMeters)})
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <Button variant="outline" size="sm" className="gap-2" onClick={handleUseMyLocation}>
           <LocateFixed className="h-4 w-4" />
