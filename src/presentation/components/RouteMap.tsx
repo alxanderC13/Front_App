@@ -1,11 +1,11 @@
 // src/presentation/components/RouteMap.tsx
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MapContainer, TileLayer, Polyline, Marker, Popup, Circle } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { PublicRouteStop, RouteCoordinate } from '../../domain/entities/PublicRoute'
 import { Button } from './ui/button'
-import { LocateFixed, X } from 'lucide-react'
+import { LocateFixed, X, Bus as BusIcon } from 'lucide-react'
 
 function numberedIcon(order: number) {
   return L.divIcon({
@@ -43,6 +43,25 @@ const userLocationIcon = L.divIcon({
   iconAnchor: [9, 9],
 })
 
+const busIcon = L.divIcon({
+  className: 'route-map-bus-icon',
+  html: `<div style="
+    background: hsl(123 46% 34%);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  ">🚍</div>`,
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+})
+
 function haversineMeters(a: [number, number], b: [number, number]): number {
   const R = 6371000
   const toRad = (deg: number) => (deg * Math.PI) / 180
@@ -66,6 +85,37 @@ function formatDuration(seconds: number): string {
   return `${h}h ${m}min`
 }
 
+// Interpola una posición a lo largo de una polilínea según el progreso t (0 a 1)
+function interpolateAlongPath(path: [number, number][], t: number): [number, number] | null {
+  if (path.length === 0) return null
+  if (path.length === 1) return path[0]
+  const totalSegments = path.length - 1
+  const raw = t * totalSegments
+  const i = Math.min(Math.floor(raw), totalSegments - 1)
+  const frac = raw - i
+  const a = path[i]
+  const b = path[i + 1]
+  return [a[0] + (b[0] - a[0]) * frac, a[1] + (b[1] - a[1]) * frac]
+}
+
+// Distancia restante desde el progreso t hasta el final de la ruta
+function remainingDistanceMeters(path: [number, number][], t: number): number {
+  if (path.length < 2) return 0
+  const current = interpolateAlongPath(path, t)
+  if (!current) return 0
+  const totalSegments = path.length - 1
+  const raw = t * totalSegments
+  const i = Math.min(Math.floor(raw), totalSegments - 1)
+  let distance = haversineMeters(current, path[i + 1])
+  for (let j = i + 1; j < totalSegments; j++) {
+    distance += haversineMeters(path[j], path[j + 1])
+  }
+  return distance
+}
+
+const BUS_CYCLE_SECONDS = 30
+const ASSUMED_SPEED_KMH = 22 // velocidad urbana promedio estimada
+
 interface RouteMapProps {
   stops: PublicRouteStop[]
   coordinates: RouteCoordinate[]
@@ -79,12 +129,34 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
   const [walkingDistance, setWalkingDistance] = useState<number | null>(null)
   const [walkingDuration, setWalkingDuration] = useState<number | null>(null)
   const [isLoadingRoute, setIsLoadingRoute] = useState(false)
+  const [busProgress, setBusProgress] = useState(0)
 
   const sortedCoordinates = [...coordinates].sort((a, b) => a.order - b.order)
   const polylinePositions: [number, number][] = sortedCoordinates.map((c) => [
     c.latitude,
     c.longitude,
   ])
+
+  const startTimeRef = useRef<number>(Date.now())
+
+  useEffect(() => {
+    if (polylinePositions.length < 2) return
+
+    const interval = setInterval(() => {
+      const elapsed = (Date.now() - startTimeRef.current) / 1000
+      const cyclePos = (elapsed % (BUS_CYCLE_SECONDS * 2)) / BUS_CYCLE_SECONDS
+      // va de 0 a 1 y luego regresa de 1 a 0 (ida y vuelta), igual que una ruta real
+      const t = cyclePos <= 1 ? cyclePos : 2 - cyclePos
+      setBusProgress(t)
+    }, 200)
+
+    return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [polylinePositions.length])
+
+  const busPosition = interpolateAlongPath(polylinePositions, busProgress)
+  const remainingMeters = remainingDistanceMeters(polylinePositions, busProgress)
+  const etaMinutes = Math.max(1, Math.round((remainingMeters / 1000 / ASSUMED_SPEED_KMH) * 60))
 
   async function findNearestStopAndRoute(position: [number, number]) {
     if (stops.length === 0) return
@@ -121,11 +193,17 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
 
   function handleUseMyLocation() {
     if (!navigator.geolocation) return
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const position: [number, number] = [pos.coords.latitude, pos.coords.longitude]
-      setUserPosition(position)
-      findNearestStopAndRoute(position)
-    })
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const position: [number, number] = [pos.coords.latitude, pos.coords.longitude]
+        setUserPosition(position)
+        findNearestStopAndRoute(position)
+      },
+      (err) => {
+        console.warn('[Geolocation] No se pudo obtener la ubicación', err)
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+    )
   }
 
   function handleClearWalkingRoute() {
@@ -153,6 +231,16 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
           <span className="text-xs text-muted-foreground">Calculando ruta a pie...</span>
         )}
       </div>
+
+      {busPosition && polylinePositions.length > 1 && (
+        <div className="flex items-center gap-2 rounded-md border bg-success/10 p-3 text-sm">
+          <BusIcon className="h-4 w-4 shrink-0 text-success" />
+          <span className="text-muted-foreground">
+            Bus en ruta · llegada estimada a destino en{' '}
+            <span className="font-medium text-foreground">~{etaMinutes} min</span>
+          </span>
+        </div>
+      )}
 
       {nearestStop && walkingDistance !== null && walkingDuration !== null && (
         <div className="flex items-center justify-between rounded-md border bg-background p-3">
@@ -195,6 +283,12 @@ export default function RouteMap({ stops, coordinates, heightClassName = 'h-96' 
               </Popup>
             </Marker>
           ))}
+
+          {busPosition && polylinePositions.length > 1 && (
+            <Marker position={busPosition} icon={busIcon}>
+              <Popup>Bus en ruta (simulado) · ETA ~{etaMinutes} min</Popup>
+            </Marker>
+          )}
 
           {userPosition && (
             <>

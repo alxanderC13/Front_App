@@ -91,6 +91,89 @@
   }
 }
 
+@keyframes movicore-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes movicore-glow-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes movicore-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(120%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+@keyframes movicore-drive {
+  0% {
+    transform: translateX(-25%) scale(0.94);
+  }
+  40% {
+    transform: translateX(25%) scale(1.06);
+  }
+  60% {
+    transform: translateX(25%) scale(1.06);
+  }
+  85% {
+    transform: translateX(-12%) scale(0.97);
+  }
+  100% {
+    transform: translateX(-25%) scale(0.94);
+  }
+}
+
+.movicore-logo-drive {
+  animation: movicore-drive 7s ease-in-out infinite;
+}
+
+.movicore-logo-float {
+  animation: movicore-float 4s ease-in-out infinite;
+}
+
+.movicore-logo-glow {
+  filter: blur(16px);
+  animation: movicore-glow-pulse 2.2s ease-in-out infinite;
+}
+
+.movicore-logo-sweep {
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
+  );
+  animation: movicore-sweep 3.5s ease-in-out infinite;
+  animation-delay: 1s;
+  mix-blend-mode: overlay;
+}
+
 @layer base {
   * {
     @apply border-border;

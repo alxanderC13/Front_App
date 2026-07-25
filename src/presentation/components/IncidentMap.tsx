@@ -97,6 +97,7 @@ export default function IncidentMap({
       () => {
         // el usuario negó el permiso o no está disponible; no es un error crítico
       },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
     )
   }, [])
 

@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { Clock } from 'lucide-react'
 import type { PublicRouteStop, RouteCoordinate } from '../../domain/entities/PublicRoute'
 import type { GPSPosition } from '../../domain/entities/GPSPosition'
 import { listGPSPositionsUseCase } from '../../infrastructure/factories/gps-position.factory'
 
 const POLL_INTERVAL_MS = 5000
+const ASSUMED_SPEED_KMH = 22 // respaldo si el GPS no reporta velocidad
 
 function stopIcon(order: number) {
   return L.divIcon({
@@ -49,6 +51,42 @@ const vehicleIcon = L.divIcon({
   iconSize: [34, 34],
   iconAnchor: [17, 17],
 })
+
+function haversineMeters(a: [number, number], b: [number, number]): number {
+  const R = 6371000
+  const toRad = (deg: number) => (deg * Math.PI) / 180
+  const dLat = toRad(b[0] - a[0])
+  const dLng = toRad(b[1] - a[1])
+  const lat1 = toRad(a[0])
+  const lat2 = toRad(b[0])
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(h))
+}
+
+// Encuentra el índice del punto más cercano de la ruta a la posición dada
+function nearestSegmentIndex(path: [number, number][], point: [number, number]): number {
+  let bestIndex = 0
+  let bestDist = Infinity
+  for (let i = 0; i < path.length; i++) {
+    const d = haversineMeters(path[i], point)
+    if (d < bestDist) {
+      bestDist = d
+      bestIndex = i
+    }
+  }
+  return bestIndex
+}
+
+// Distancia restante desde el punto más cercano de la ruta hasta el final
+function remainingDistanceMeters(path: [number, number][], point: [number, number]): number {
+  if (path.length < 2) return 0
+  const idx = nearestSegmentIndex(path, point)
+  let distance = haversineMeters(point, path[idx])
+  for (let j = idx; j < path.length - 1; j++) {
+    distance += haversineMeters(path[j], path[j + 1])
+  }
+  return distance
+}
 
 interface LiveTripMapProps {
   tripId: number
@@ -98,6 +136,17 @@ export default function LiveTripMap({
   const trailPolyline: [number, number][] = positions.map((p) => [p.latitude, p.longitude])
   const currentPosition = positions[positions.length - 1]
 
+  let etaMinutes: number | null = null
+  if (currentPosition && routePolyline.length > 1) {
+    const remainingMeters = remainingDistanceMeters(routePolyline, [
+      currentPosition.latitude,
+      currentPosition.longitude,
+    ])
+    const speedKmh =
+      currentPosition.speed && currentPosition.speed > 1 ? currentPosition.speed : ASSUMED_SPEED_KMH
+    etaMinutes = Math.max(0, Math.round((remainingMeters / 1000 / speedKmh) * 60))
+  }
+
   const center: [number, number] = currentPosition
     ? [currentPosition.latitude, currentPosition.longitude]
     : routePolyline.length > 0
@@ -117,6 +166,19 @@ export default function LiveTripMap({
           </span>
         )}
       </div>
+
+      {etaMinutes !== null && (
+        <div className="flex items-center gap-2 rounded-md border bg-success/10 p-3 text-sm">
+          <Clock className="h-4 w-4 shrink-0 text-success" />
+          <span className="text-muted-foreground">
+            Llegada estimada a destino en{' '}
+            <span className="font-medium text-foreground">
+              {etaMinutes === 0 ? 'menos de 1 min' : `~${etaMinutes} min`}
+            </span>
+            {currentPosition?.speed ? ` · ${currentPosition.speed} km/h actual` : ''}
+          </span>
+        </div>
+      )}
 
       <div className={`w-full overflow-hidden rounded-md border ${heightClassName}`}>
         <MapContainer center={center} zoom={13} scrollWheelZoom={false} className="h-full w-full">
@@ -152,6 +214,12 @@ export default function LiveTripMap({
                 Vehículo en ruta
                 <br />
                 Velocidad: {currentPosition.speed ?? '—'} km/h
+                {etaMinutes !== null && (
+                  <>
+                    <br />
+                    ETA: ~{etaMinutes} min
+                  </>
+                )}
               </Popup>
             </Marker>
           )}
