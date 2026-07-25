@@ -31,7 +31,7 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-24">
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-40">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90">
           <AnimatedLogo className="w-[95%] max-w-4xl" />
         </div>
 
