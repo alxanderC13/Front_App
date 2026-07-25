@@ -96,6 +96,27 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: linear-gradient(
+      135deg,
+      #0d2a5c 0%,
+      #0d47a1 25%,
+      #1a2e5c 55%,
+      #4a1620 80%,
+      #6e1414 100%
+    );
+    background-attachment: fixed;
+    min-height: 100vh;
   }
+}
+
+.auth-gradient-bg {
+  background: linear-gradient(
+    135deg,
+    #0d2a5c 0%,
+    #0d47a1 25%,
+    #1a2e5c 55%,
+    #4a1620 80%,
+    #6e1414 100%
+  );
 }

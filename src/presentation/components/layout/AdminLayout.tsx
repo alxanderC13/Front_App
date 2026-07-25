@@ -52,7 +52,7 @@ export default function AdminLayout() {
   const visibleItems = navItems.filter((item) => !item.adminOnly || isAdmin)
 
   return (
-    <div className="flex min-h-screen bg-muted/30">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col border-r bg-background p-4 md:flex">
         <div className="mb-6 px-2">
