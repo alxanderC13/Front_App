@@ -31,24 +31,30 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-24">
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <AnimatedLogo className="w-[95%] max-w-4xl" />
         </div>
 
-        <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-5 rounded-2xl bg-background/70 p-8 text-center shadow-xl backdrop-blur-sm">
-          <div className="flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
+        <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
+          <div className="flex items-center gap-2 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-lg">
             <Bus className="h-4 w-4" />
             Smart Mobility
           </div>
-          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
+          <h1
+            className="text-4xl font-bold tracking-tight text-foreground md:text-5xl"
+            style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.7)' }}
+          >
             Movilidad inteligente para Quito
           </h1>
-          <p className="max-w-2xl text-lg text-muted-foreground">
+          <p
+            className="max-w-2xl text-lg font-medium text-foreground"
+            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.9)' }}
+          >
             Consulta rutas, paradas y horarios del sistema de transporte público en tiempo real,
             gestionado con MoviCore.
           </p>
           <Link to="/routes">
-            <Button size="lg" className="mt-2">
+            <Button size="lg" className="mt-2 shadow-xl">
               Ver rutas disponibles
             </Button>
           </Link>
