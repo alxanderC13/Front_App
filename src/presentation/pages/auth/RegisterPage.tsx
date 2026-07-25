@@ -43,7 +43,7 @@ export default function RegisterPage() {
     <div className="auth-gradient-bg flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Crear cuenta — QuitoMove</CardTitle>
+          <CardTitle>Crear cuenta — MoviCore</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

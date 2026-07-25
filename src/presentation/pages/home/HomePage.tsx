@@ -42,7 +42,7 @@ export default function HomePage() {
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
             Consulta rutas, paradas y horarios del sistema de transporte público en tiempo real,
-            gestionado con QuitoMove.
+            gestionado con MoviCore.
           </p>
           <Link to="/routes">
             <Button size="lg">Ver rutas disponibles</Button>

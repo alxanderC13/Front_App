@@ -56,7 +56,7 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col border-r bg-background p-4 md:flex">
         <div className="mb-6 px-2">
-          <h1 className="text-lg font-bold text-primary">QuitoMove</h1>
+          <h1 className="text-lg font-bold text-primary">MoviCore</h1>
           <p className="text-xs text-muted-foreground">Smart Mobility</p>
         </div>
 
@@ -109,7 +109,7 @@ export default function AdminLayout() {
       <div className="flex flex-1 flex-col">
         {/* Topbar (mobile) */}
         <header className="flex items-center justify-between border-b bg-background px-4 py-3 md:hidden">
-          <h1 className="text-lg font-bold text-primary">QuitoMove</h1>
+          <h1 className="text-lg font-bold text-primary">MoviCore</h1>
           <div className="flex items-center gap-1">
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={handleLogout}>

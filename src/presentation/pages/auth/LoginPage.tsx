@@ -35,7 +35,7 @@ export default function LoginPage() {
     <div className="auth-gradient-bg flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Iniciar sesión — QuitoMove</CardTitle>
+          <CardTitle>Iniciar sesión — MoviCore</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

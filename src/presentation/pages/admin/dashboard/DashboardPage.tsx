@@ -31,7 +31,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">Bienvenido, {user?.username}</h1>
-        <p className="text-sm text-muted-foreground">Resumen general del sistema QuitoMove</p>
+        <p className="text-sm text-muted-foreground">Resumen general del sistema MoviCore</p>
       </div>
 
       {error && <p className="text-destructive">{error}</p>}

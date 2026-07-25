@@ -51,7 +51,7 @@ export default function AboutPage() {
         <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent-red shadow-lg">
           <Bus className="h-12 w-12 text-white" />
         </div>
-        <h1 className="text-2xl font-bold">QuitoMove — MoviCore</h1>
+        <h1 className="text-2xl font-bold">MoviCore — MoviCore</h1>
         <p className="mt-1 text-primary">Transporte Público Inteligente</p>
         <Badge variant="secondary" className="mt-2">
           Versión 3.0.0
@@ -61,7 +61,7 @@ export default function AboutPage() {
       <div className="flex flex-col gap-4">
         <Section icon={Info} title="Descripción">
           <p className="text-sm text-muted-foreground">
-            QuitoMove (MoviCore) es una plataforma diseñada para mejorar la experiencia del
+            MoviCore (MoviCore) es una plataforma diseñada para mejorar la experiencia del
             transporte público en la ciudad de Quito, Ecuador. Permite a los usuarios consultar
             rutas, monitorear incidencias en tiempo real y gestionar el sistema de transporte de
             manera eficiente.

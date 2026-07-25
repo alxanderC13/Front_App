@@ -7,7 +7,7 @@ export default function ContactPage() {
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-2 text-3xl font-bold">Contacto</h1>
       <p className="mb-8 text-muted-foreground">
-        Proyecto académico — Sistema de Gestión de Transporte QuitoMove
+        Proyecto académico — Sistema de Gestión de Transporte MoviCore
       </p>
 
       <Card>

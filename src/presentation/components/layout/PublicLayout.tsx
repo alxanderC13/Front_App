@@ -49,7 +49,7 @@ export default function PublicLayout() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <NavLink to="/" className="flex items-center gap-2 font-bold text-primary">
             <Bus className="h-5 w-5" />
-            QuitoMove
+            MoviCore
           </NavLink>
 
           <nav className="hidden items-center gap-6 md:flex">
@@ -108,7 +108,7 @@ export default function PublicLayout() {
 
       <footer className="border-t bg-muted/30 py-6">
         <div className="mx-auto max-w-6xl px-4 text-center text-sm text-muted-foreground">
-          QuitoMove — Movilidad inteligente para Quito. Proyecto académico.
+          MoviCore — Movilidad inteligente para Quito. Proyecto académico.
         </div>
       </footer>
 
