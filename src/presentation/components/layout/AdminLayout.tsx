@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
   { to: '/admin/drivers', label: 'Conductores', icon: Users, adminOnly: true },
   { to: '/admin/assignments', label: 'Asignaciones', icon: ClipboardList, adminOnly: true },
   { to: '/admin/stops', label: 'Paradas', icon: MapPinned, adminOnly: true },
-  { to: '/admin/trips', label: 'Viajes', icon: RouteIcon, adminOnly: true },
+  { to: '/admin/trips', label: 'Viajes', icon: RouteIcon },
   { to: '/admin/incidents', label: 'Incidentes', icon: AlertTriangle },
   { to: '/admin/notifications', label: 'Notificaciones', icon: Bell },
   { to: '/admin/profile', label: 'Mi Perfil', icon: UserCircle },
