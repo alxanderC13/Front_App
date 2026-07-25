@@ -85,7 +85,9 @@ export default function TripsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Viajes</h1>
-          <p className="text-sm text-muted-foreground">Gestión de viajes del sistema</p>
+          <p className="text-sm text-muted-foreground">
+            Gestión de viajes del sistema · consulta el mapa GPS en vivo de cualquier viaje
+          </p>
         </div>
         {isAdmin && (
           <Button onClick={handleCreate} className="gap-2">
@@ -104,14 +106,14 @@ export default function TripsListPage() {
               <TableHead>Conductor</TableHead>
               <TableHead>Fecha</TableHead>
               <TableHead>Estado</TableHead>
-              {isAdmin && <TableHead className="text-right">Acciones</TableHead>}
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading &&
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  {Array.from({ length: isAdmin ? 6 : 5 }).map((__, j) => (
+                  {Array.from({ length: 6 }).map((__, j) => (
                     <TableCell key={j}>
                       <Skeleton className="h-4 w-full" />
                     </TableCell>
@@ -121,7 +123,7 @@ export default function TripsListPage() {
 
             {!isLoading && trips.length === 0 && (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 6 : 5} className="text-center text-muted-foreground">
+                <TableCell colSpan={6} className="text-center text-muted-foreground">
                   No se encontraron viajes.
                 </TableCell>
               </TableRow>
@@ -139,36 +141,38 @@ export default function TripsListPage() {
                       {statusConfig[trip.status].label}
                     </Badge>
                   </TableCell>
-                  {isAdmin && (
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-primary hover:text-primary"
-                          onClick={() =>
-                            navigate(`/admin/trips/${trip.id}/live-map`, {
-                              state: { routeId: trip.route, routeCode: trip.routeCode },
-                            })
-                          }
-                          title="Ver mapa en vivo"
-                        >
-                          <MapPin className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(trip)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => setDeletingTrip(trip)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  )}
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-primary hover:text-primary"
+                        onClick={() =>
+                          navigate(`/admin/trips/${trip.id}/live-map`, {
+                            state: { routeId: trip.route, routeCode: trip.routeCode },
+                          })
+                        }
+                        title="Ver mapa en vivo"
+                      >
+                        <MapPin className="h-4 w-4" />
+                      </Button>
+                      {isAdmin && (
+                        <>
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(trip)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => setDeletingTrip(trip)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
