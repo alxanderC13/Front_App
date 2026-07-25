@@ -23,3 +23,10 @@ export interface PublicBusStop {
   latitude: number
   longitude: number
 }
+
+export interface RouteCoordinate {
+  id: number
+  latitude: number
+  longitude: number
+  order: number
+}

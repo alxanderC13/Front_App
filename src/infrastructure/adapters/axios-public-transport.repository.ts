@@ -1,6 +1,6 @@
 // src/infrastructure/adapters/axios-public-transport.repository.ts
 import type { PublicTransportRepository } from '../../domain/ports/PublicTransportRepository'
-import type { PublicRoute, PublicRouteStop, PublicBusStop } from '../../domain/entities/PublicRoute'
+import type { PublicRoute, PublicRouteStop, PublicBusStop, RouteCoordinate } from '../../domain/entities/PublicRoute'
 import type { PaginatedResult } from '../../domain/entities/PaginatedResult'
 import { axiosClient } from '../http/axios-client'
 import { parseApiError } from '../http/parse-api-error'
@@ -12,6 +12,13 @@ interface RouteStopApiResponse {
   latitude: string
   longitude: string
   stop_order: number
+}
+
+interface RouteCoordinateApiResponse {
+  id: number
+  latitude: string
+  longitude: string
+  order: number
 }
 
 export class AxiosPublicTransportRepository implements PublicTransportRepository {
@@ -38,6 +45,22 @@ export class AxiosPublicTransportRepository implements PublicTransportRepository
         latitude: Number(stop.latitude),
         longitude: Number(stop.longitude),
         stopOrder: stop.stop_order,
+      }))
+    } catch (error) {
+      throw parseApiError(error)
+    }
+  }
+
+  async getRouteCoordinates(routeId: number): Promise<RouteCoordinate[]> {
+    try {
+      const { data } = await axiosClient.get<RouteCoordinateApiResponse[]>(
+        `/public/routes/${routeId}/coordinates/`,
+      )
+      return data.map((coord) => ({
+        id: coord.id,
+        latitude: Number(coord.latitude),
+        longitude: Number(coord.longitude),
+        order: coord.order,
       }))
     } catch (error) {
       throw parseApiError(error)

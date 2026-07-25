@@ -15,6 +15,13 @@ export interface RegisterPayload {
 export interface AuthRepository {
   login(username: string, password: string): Promise<AuthTokens>
   register(data: RegisterPayload): Promise<void>
+  requestPasswordReset(email: string): Promise<void>
+  confirmPasswordReset(
+    uid: string,
+    token: string,
+    newPassword: string,
+    newPassword2: string,
+  ): Promise<void>
   getCurrentUser(): Promise<User>
   logout(): void
 }

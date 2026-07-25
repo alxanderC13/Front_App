@@ -67,6 +67,32 @@ export class AxiosAuthRepository implements AuthRepository {
     }
   }
 
+  async requestPasswordReset(email: string): Promise<void> {
+    try {
+      await axiosClient.post('/auth/password-reset/', { email })
+    } catch (error) {
+      throw parseApiError(error)
+    }
+  }
+
+  async confirmPasswordReset(
+    uid: string,
+    token: string,
+    newPassword: string,
+    newPassword2: string,
+  ): Promise<void> {
+    try {
+      await axiosClient.post('/auth/password-reset/confirm/', {
+        uid,
+        token,
+        new_password: newPassword,
+        new_password2: newPassword2,
+      })
+    } catch (error) {
+      throw parseApiError(error)
+    }
+  }
+
   async getCurrentUser(): Promise<User> {
     try {
       const { data } = await axiosClient.get<UserApiResponse>('/auth/me/')

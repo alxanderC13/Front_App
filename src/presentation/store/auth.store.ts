@@ -1,7 +1,14 @@
 // src/presentation/store/auth.store.ts
 import { create } from 'zustand'
 import type { User } from '../../domain/entities/User'
-import { loginUseCase, registerUseCase, getCurrentUserUseCase, logoutUseCase } from '../../infrastructure/factories/auth.factory'
+import {
+  loginUseCase,
+  registerUseCase,
+  requestPasswordResetUseCase,
+  confirmPasswordResetUseCase,
+  getCurrentUserUseCase,
+  logoutUseCase,
+} from '../../infrastructure/factories/auth.factory'
 import { localTokenStorage } from '../../infrastructure/storage/local-token-storage'
 import { isAdministrator } from '../../domain/enums/Role'
 
@@ -12,6 +19,13 @@ interface AuthState {
   error: string | null
   login: (username: string, password: string) => Promise<void>
   register: (username: string, email: string, password: string) => Promise<void>
+  requestPasswordReset: (email: string) => Promise<void>
+  confirmPasswordReset: (
+    uid: string,
+    token: string,
+    newPassword: string,
+    newPassword2: string,
+  ) => Promise<void>
   logout: () => void
   loadCurrentUser: () => Promise<void>
   isAuthenticated: () => boolean
@@ -43,6 +57,33 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isLoading: false })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error al registrarse'
+      set({ error: message, isLoading: false })
+      throw err
+    }
+  },
+  requestPasswordReset: async (email: string) => {
+    set({ isLoading: true, error: null })
+    try {
+      await requestPasswordResetUseCase.execute(email)
+      set({ isLoading: false })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error al solicitar el restablecimiento'
+      set({ error: message, isLoading: false })
+      throw err
+    }
+  },
+  confirmPasswordReset: async (
+    uid: string,
+    token: string,
+    newPassword: string,
+    newPassword2: string,
+  ) => {
+    set({ isLoading: true, error: null })
+    try {
+      await confirmPasswordResetUseCase.execute(uid, token, newPassword, newPassword2)
+      set({ isLoading: false })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error al restablecer la contraseña'
       set({ error: message, isLoading: false })
       throw err
     }
