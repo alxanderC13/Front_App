@@ -2,23 +2,30 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, MapPin } from 'lucide-react'
-import type { PublicRouteStop } from '../../../domain/entities/PublicRoute'
-import { getRouteStopsUseCase } from '../../../infrastructure/factories/public.factory'
+import type { PublicRouteStop, RouteCoordinate } from '../../../domain/entities/PublicRoute'
+import { getRouteStopsUseCase, getRouteCoordinatesUseCase } from '../../../infrastructure/factories/public.factory'
 import { Skeleton } from '../../components/ui/skeleton'
 import { Badge } from '../../components/ui/badge'
+import RouteMap from '../../components/RouteMap'
 
 export default function PublicRouteDetailPage() {
   const { id } = useParams<{ id: string }>()
   const [stops, setStops] = useState<PublicRouteStop[]>([])
+  const [coordinates, setCoordinates] = useState<RouteCoordinate[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!id) return
     setIsLoading(true)
-    getRouteStopsUseCase
-      .execute(Number(id))
-      .then(setStops)
+    Promise.all([
+      getRouteStopsUseCase.execute(Number(id)),
+      getRouteCoordinatesUseCase.execute(Number(id)),
+    ])
+      .then(([stopsResult, coordinatesResult]) => {
+        setStops(stopsResult)
+        setCoordinates(coordinatesResult)
+      })
       .catch((err) => setError(err instanceof Error ? err.message : 'Error al cargar la ruta'))
       .finally(() => setIsLoading(false))
   }, [id])
@@ -48,6 +55,12 @@ export default function PublicRouteDetailPage() {
 
       {!isLoading && stops.length === 0 && !error && (
         <p className="text-muted-foreground">Esta ruta no tiene paradas registradas.</p>
+      )}
+
+      {!isLoading && (stops.length > 0 || coordinates.length > 0) && (
+        <div className="mb-8">
+          <RouteMap stops={stops} coordinates={coordinates} />
+        </div>
       )}
 
       <ol className="flex flex-col gap-3">
