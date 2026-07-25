@@ -37,7 +37,7 @@ export default function HomePage() {
             Smart Mobility
           </div>
 
-          <AnimatedLogo className="w-[80%] max-w-md" />
+          <AnimatedLogo className="w-[95%] max-w-4xl" />
 
           <p className="max-w-2xl text-lg text-muted-foreground">
             Consulta rutas, paradas y horarios del sistema de transporte público en tiempo real,
