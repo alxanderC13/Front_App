@@ -30,12 +30,12 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-20">
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-15">
-          <AnimatedLogo className="w-[90%] max-w-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-24">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-40">
+          <AnimatedLogo className="w-[95%] max-w-4xl" />
         </div>
 
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
+        <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-5 rounded-2xl bg-background/70 p-8 text-center shadow-xl backdrop-blur-sm">
           <div className="flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
             <Bus className="h-4 w-4" />
             Smart Mobility
@@ -48,7 +48,9 @@ export default function HomePage() {
             gestionado con MoviCore.
           </p>
           <Link to="/routes">
-            <Button size="lg">Ver rutas disponibles</Button>
+            <Button size="lg" className="mt-2">
+              Ver rutas disponibles
+            </Button>
           </Link>
         </div>
       </section>
