@@ -30,9 +30,12 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-16">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
-          <AnimatedLogo className="w-64 md:w-80" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-accent-red/5 to-background px-4 py-20">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-15">
+          <AnimatedLogo className="w-[90%] max-w-3xl" />
+        </div>
+
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
           <div className="flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
             <Bus className="h-4 w-4" />
             Smart Mobility
