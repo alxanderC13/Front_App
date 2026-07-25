@@ -1,7 +1,7 @@
 // src/presentation/pages/admin/incidents/IncidentsListPage.tsx
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Plus, Pencil, Trash2, CheckCircle2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, CheckCircle2, List, Map as MapIcon } from 'lucide-react'
 import { useIncidentStore } from '../../../store/incident.store'
 import { useAuthStore } from '../../../store/auth.store'
 import type { Incident, IncidentSeverity, IncidentStatus } from '../../../../domain/entities/Incident'
@@ -27,6 +27,7 @@ import {
   AlertDialogAction,
 } from '../../../components/ui/alert-dialog'
 import IncidentFormDialog from './IncidentFormDialog'
+import IncidentMap from '../../../components/IncidentMap'
 
 const PAGE_SIZE = 20
 
@@ -60,6 +61,8 @@ export default function IncidentsListPage() {
   const [formOpen, setFormOpen] = useState(false)
   const [editingIncident, setEditingIncident] = useState<Incident | null>(null)
   const [deletingIncident, setDeletingIncident] = useState<Incident | null>(null)
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null)
 
   useEffect(() => {
     fetchIncidents()
@@ -109,14 +112,90 @@ export default function IncidentsListPage() {
           <h1 className="text-2xl font-bold">Incidentes</h1>
           <p className="text-sm text-muted-foreground">Gestión de incidentes reportados</p>
         </div>
-        {isAdmin && (
-          <Button onClick={handleCreate} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Reportar incidente
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-md border">
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="sm"
+              className="rounded-r-none gap-1"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+              Lista
+            </Button>
+            <Button
+              variant={viewMode === 'map' ? 'secondary' : 'ghost'}
+              size="sm"
+              className="rounded-l-none gap-1"
+              onClick={() => setViewMode('map')}
+            >
+              <MapIcon className="h-4 w-4" />
+              Mapa
+            </Button>
+          </div>
+          {isAdmin && (
+            <Button onClick={handleCreate} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Reportar incidente
+            </Button>
+          )}
+        </div>
       </div>
 
+      {viewMode === 'map' && (
+        <div className="flex flex-col gap-3">
+          <IncidentMap
+            incidents={incidents}
+            onSelectIncident={setSelectedIncident}
+            heightClassName="h-[28rem]"
+          />
+          {selectedIncident && (
+            <div className="rounded-md border bg-background p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold">{selectedIncident.incidentTypeName}</h3>
+                <Badge
+                  variant={
+                    selectedIncident.severity === 'high'
+                      ? 'destructive'
+                      : selectedIncident.severity === 'medium'
+                        ? 'secondary'
+                        : 'outline'
+                  }
+                >
+                  {selectedIncident.severity.toUpperCase()}
+                </Badge>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">{selectedIncident.description}</p>
+              <div className="mt-3 grid grid-cols-3 gap-3 text-center text-xs">
+                <div className="rounded-md bg-muted p-2">
+                  <p className="text-muted-foreground">Demora est.</p>
+                  <p className="font-semibold">
+                    {selectedIncident.severity === 'high'
+                      ? '~60 min'
+                      : selectedIncident.severity === 'medium'
+                        ? '~30 min'
+                        : '~15 min'}
+                  </p>
+                </div>
+                <div className="rounded-md bg-muted p-2">
+                  <p className="text-muted-foreground">Estado</p>
+                  <p className="font-semibold">
+                    {selectedIncident.status === 'resolved' ? 'Resuelto' : 'Abierto'}
+                  </p>
+                </div>
+                <div className="rounded-md bg-muted p-2">
+                  <p className="text-muted-foreground">Ubicación</p>
+                  <p className="font-semibold">
+                    {selectedIncident.latitude.toFixed(4)}, {selectedIncident.longitude.toFixed(4)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {viewMode === 'list' && (
       <div className="rounded-md border bg-background">
         <Table>
           <TableHeader>
@@ -194,8 +273,9 @@ export default function IncidentsListPage() {
           </TableBody>
         </Table>
       </div>
+      )}
 
-      {totalPages > 1 && (
+      {totalPages > 1 && viewMode === 'list' && (
         <div className="flex items-center justify-center gap-2">
           <Button
             variant="outline"

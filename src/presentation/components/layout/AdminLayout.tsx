@@ -10,6 +10,7 @@ import {
   Bell,
   UserCircle,
   LogOut,
+  MapPinned,
 } from 'lucide-react'
 import { useAuthStore } from '../../store/auth.store'
 import { Button } from '../ui/button'
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { to: '/admin/routes', label: 'Rutas', icon: RouteIcon },
   { to: '/admin/drivers', label: 'Conductores', icon: Users },
   { to: '/admin/assignments', label: 'Asignaciones', icon: ClipboardList },
+  { to: '/admin/stops', label: 'Paradas', icon: MapPinned },
   { to: '/admin/trips', label: 'Viajes', icon: RouteIcon },
   { to: '/admin/incidents', label: 'Incidentes', icon: AlertTriangle },
   { to: '/admin/notifications', label: 'Notificaciones', icon: Bell },
